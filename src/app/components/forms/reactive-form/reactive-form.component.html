@@ -1,0 +1,55 @@
+<form [formGroup]="form">
+  <h1>Your Details</h1>
+  <div *ngFor="let prop of personProps">
+
+      <div class="row" [ngSwitch]="prop.type">
+
+        <div *ngSwitchCase="'text'">
+          <input *ngSwitchCase="'text'" [type]="prop.type" name="{{ prop.label }}" [formControlName]="prop.key">
+          <label for="{{ prop.label }}">{{ prop.label }}:</label>
+        </div>
+
+        <div *ngSwitchCase="'number'">
+          <input *ngSwitchCase="'number'" [type]="prop.type" [formControlName]="prop.key">
+          <label for="{{ prop.label }}">{{ prop.label }}:</label>
+        </div>
+
+        <div *ngSwitchCase="'radio'">
+          <label for="{{ prop.label }}">{{ prop.label }}:</label>
+          <span *ngFor="let option of prop.options">
+            <label for="{{ prop.label }}" class="label--radio">{{ option.label }}:</label>
+            <input type="radio"
+              [name]="prop.key"
+              [formControlName]="prop.key"
+              [value]="option.value"
+            >
+          </span>
+        </div>
+
+        <div *ngSwitchCase="'select'" >
+          <select [formControlName]="prop.key">
+            <option *ngFor="let option of prop.options" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <label for="{{ prop.label }}">{{ prop.label }}:</label>
+        </div>
+
+
+
+
+      </div>
+
+      <div class="error" *ngIf="form.get(prop.key).invalid && (form.get(prop.key).dirty)">
+        <span *ngIf="form.get(prop.key).errors.required">
+            You have to provide a value.
+        </span>
+        <span *ngIf="form.get(prop.key).errors.min">
+            You have to provide a value greater or equal to {{ form.get(prop.key).errors.min.min }}
+        </span>
+      </div>
+
+  </div>
+  <button type="Submit" [disabled]="!form.valid">Submit</button>
+</form>
+<pre>{{ form.value | json }}</pre>
